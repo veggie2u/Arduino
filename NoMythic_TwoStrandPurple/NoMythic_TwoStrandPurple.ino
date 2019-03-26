@@ -49,7 +49,7 @@ void loop() {
 
 void turnOn1() {
   for(int i=0;i<NUMPIXELS;i++){
-    pixels1.setPixelColor(i, color4); // purple
+    pixels1.setPixelColor(i, color4);
     pixels1.show(); // This sends the updated pixel color to the hardware.
   }
 }
@@ -63,9 +63,9 @@ void turnOff1() {
 
 void turnOn2() {
   for(int i=0;i<NUMPIXELS;i++){
-    pixels2.setPixelColor(i, color4); // purple    
+    pixels2.setPixelColor(i, color4);
+    pixels2.show(); // This sends the updated pixel color to the hardware.
   }
-  pixels2.show(); // This sends the updated pixel color to the hardware.
 }
 
 void turnOff2() {
