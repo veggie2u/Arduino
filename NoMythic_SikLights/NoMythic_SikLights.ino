@@ -34,10 +34,11 @@ Adafruit_NeoPixel pixels2 = Adafruit_NeoPixel(NUMPIXELS, PIN2, NEO_GRB + NEO_KHZ
 
 // Testing different purples
 // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
-uint32_t color1 = pixels1.Color(102, 000, 204);
+uint32_t color1 = pixels1.Color(102, 000, 204); // Purple
 uint32_t color2 = pixels1.Color(161, 000, 255);
 uint32_t color3 = pixels1.Color(150, 025, 148);
 uint32_t color4 = pixels1.Color(91, 36, 98);
+uint32_t orange = pixels1.Color(255, 69, 0);
 
 /*******************************************************
  * I2C Config                                          *
@@ -88,6 +89,10 @@ void handleEvent(int howMany) {
         turnOn1();
         turnOn2();
         break;
+      case 3: 
+        last30Seconds1();
+        last30Seconds2();
+        break;
     }
   }
   digitalWrite(STATUS_PIN, LOW);
@@ -95,13 +100,16 @@ void handleEvent(int howMany) {
 
 // Nothing happening right now
 void loop() {
+  turnOn1();
+  delay(DELAY);
+  last30Seconds1();
   delay(DELAY);
 }
 
 // Turn on all lights on strand 1
 void turnOn1() {
   for(int i=0;i<NUMPIXELS;i++){
-    pixels1.setPixelColor(i, color4); // purple
+    pixels1.setPixelColor(i, color1); // purple
     pixels1.show(); // This sends the updated pixel color to the hardware.
   }
 }
@@ -117,7 +125,7 @@ void turnOff1() {
 // Turn on all lights on strand 2
 void turnOn2() {
   for(int i=0;i<NUMPIXELS;i++){
-    pixels2.setPixelColor(i, color4); // purple
+    pixels2.setPixelColor(i, color1); // purple
     pixels2.show(); // This sends the updated pixel color to the hardware.
   }
 }
@@ -126,6 +134,24 @@ void turnOn2() {
 void turnOff2() {
   for(int i=0;i<NUMPIXELS;i++){
     pixels2.setPixelColor(i, 0);
+  }
+  pixels2.show();
+}
+
+void last30Seconds1() {
+  int start = NUMPIXELS / 3;
+  int finish = start * 2;
+  for(int i = start;i < finish;i++){
+    pixels1.setPixelColor(i, orange);
+  }
+  pixels1.show();
+}
+
+void last30Seconds2() {
+  int start = NUMPIXELS / 3;
+  int finish = start * 2;
+  for(int i = start;i < finish;i++){
+    pixels2.setPixelColor(i, orange);
   }
   pixels2.show();
 }
