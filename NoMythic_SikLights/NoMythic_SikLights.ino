@@ -34,11 +34,12 @@ Adafruit_NeoPixel pixels2 = Adafruit_NeoPixel(NUMPIXELS, PIN2, NEO_GRB + NEO_KHZ
 
 // Testing different purples
 // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
-uint32_t color1 = pixels1.Color(102, 000, 204); // Purple
+uint32_t purple = pixels1.Color(102, 000, 204); // Purple
 uint32_t color2 = pixels1.Color(161, 000, 255);
 uint32_t color3 = pixels1.Color(150, 025, 148);
 uint32_t color4 = pixels1.Color(91, 36, 98);
 uint32_t orange = pixels1.Color(255, 69, 0);
+uint32_t red = pixels1.Color(255, 0, 0);
 
 /*******************************************************
  * I2C Config                                          *
@@ -65,8 +66,7 @@ void setup() {
   Wire.begin(DEVICE_NO);
   // when an I2C event happens, process it
   Wire.onReceive(handleEvent);
-  
-  Serial.println("Ready");
+  Serial.println("I2C Ready");
 }
 
 /*******************************************************
@@ -81,18 +81,20 @@ void handleEvent(int howMany) {
     Serial.println(command);
     // we have predefined commands that both send and receive understand
     switch(command) {
-      case 1:
+      case 1: // turn off command
         turnOff1();
         turnOff2();
         break;
-      case 2:
-        turnOn1();
-        turnOn2();
+      case 2: // turn on command
+        setSolidColor1(purple);
+        setSolidColor2(purple);
         break;
-      case 3: 
+      case 3: // last 30 sec command
         last30Seconds1();
         last30Seconds2();
         break;
+      case 4: // limelight lined up
+        blinkRed();
     }
   }
   digitalWrite(STATUS_PIN, LOW);
@@ -100,18 +102,23 @@ void handleEvent(int howMany) {
 
 // Nothing happening right now
 void loop() {
-  turnOn1();
-  delay(DELAY);
-  last30Seconds1();
   delay(DELAY);
 }
 
-// Turn on all lights on strand 1
-void turnOn1() {
+// Set all led on strand 1 to one color
+void setSolidColor1(uint32_t color) {
   for(int i=0;i<NUMPIXELS;i++){
-    pixels1.setPixelColor(i, color1); // purple
-    pixels1.show(); // This sends the updated pixel color to the hardware.
+    pixels1.setPixelColor(i, color);
   }
+  pixels1.show();
+}
+
+// Set all led on strand 2 to one color
+void setSolidColor2(uint32_t color) {
+  for(int i=0;i<NUMPIXELS;i++){
+    pixels2.setPixelColor(i, color);
+  }
+  pixels2.show();
 }
 
 // Turn off all lights on strand 1
@@ -120,14 +127,6 @@ void turnOff1() {
     pixels1.setPixelColor(i, 0);
   }
   pixels1.show();
-}
-
-// Turn on all lights on strand 2
-void turnOn2() {
-  for(int i=0;i<NUMPIXELS;i++){
-    pixels2.setPixelColor(i, color1); // purple
-    pixels2.show(); // This sends the updated pixel color to the hardware.
-  }
 }
 
 // Turn off all lights on strand 2
@@ -154,4 +153,11 @@ void last30Seconds2() {
     pixels2.setPixelColor(i, orange);
   }
   pixels2.show();
+}
+
+void blinkRed() {
+  setSolidColor1(red);
+  setSolidColor2(red);
+  delay(300);
+  setPurple();
 }
